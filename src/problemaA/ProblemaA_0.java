@@ -15,10 +15,10 @@ public class ProblemaA_0 {
 			System.out.println(solve(numeros)?"Yes":"No");//Se llama el metodo solve con la información leida
 		}
 	}
-	//Solución ingenua
+	//Solución trivial
 	public static boolean solve(int[] numeros){
 		LinkedList<Integer> ent=new LinkedList<Integer>();
-		for(int e:numeros)ent.add(e);
+		for(int e:numeros)ent.add(e);/** complejidad temporal k y espacial k*/
 		return solve(ent,new LinkedList<Integer>());
 	}
 	public static boolean solve(LinkedList<Integer> nums,LinkedList<Integer> solucion){
