@@ -18,12 +18,14 @@ public class ProblemaC_1 {
 			int cableParaMismaToma = 0;
 			j=h.split(" ");
 			final int N=Integer.parseInt(j[0]),B=Integer.parseInt(j[1]);//Se lee el número de tomas eléctricas (N) y el número de cables (B)
+			//			System.err.println(N+" "+B);
 			//TODO inicializar la estructura seleccionada para almacenar los arcos
-			
 			List<Edge> arcos = new LinkedList<Edge>();
-			List<Edge>[] lAdj = new List[N];
+			LinkedList<Edge>[] lAdj = new LinkedList[N];
+			LinkedList<Edge>[] lAdjInv = new LinkedList[N];
 			for (int i = 0; i < N; i++) {
 				lAdj[i] = new LinkedList<Edge>();
+				lAdjInv[i] = new LinkedList<Edge>();
 			}
 			for(int e=0;e<B;e++){
 				j=br.readLine().split(" ");
@@ -38,55 +40,103 @@ public class ProblemaC_1 {
 					arcos.add(arco1);
 					Edge arco2 = new Edge(u, l);
 					lAdj[v].add(arco2);
-					arcos.add(arco2);
+					//					arcos.add(arco2);
+					//					System.err.println(u +"->" +v + "with" + l);
+					//					System.err.println(v +"->" +u + "with" + l);
 				}
 			}
-			
+
 			for (int i = 0; i < lAdj.length; i++) {
 				Collections.sort(lAdj[i]);
 			}
-			Collections.sort(arcos);
-			System.out.println("cable "+cableParaMismaToma);
 			System.out.println(solve(N,cableParaMismaToma,arcos, lAdj/*TODO agregar los parametros necesario*/));
 		}
 	}
 
-	public static int solve(final int N, int cableInservible, List<Edge> arcos, List[] lAdj/*TODO agregar los parametros necesario*/){
+	public static int solve(final int N, int cableInservible, List<Edge> arcos, LinkedList<Edge>[] lAdj/*TODO agregar los parametros necesario*/){
 		//TODO su solucion
-		Node[] nodos=new Node[lAdj.length];
-		for(int e=0;e<nodos.length;e++)	nodos[e]=new Node(e);
-		int max = 0;
 		int respuesta = 0;
-		for (int i = 0; i < lAdj.length; i++) {
-			
-			List<Edge> actual = lAdj[i];
-			nodos[i].marcado = true;
-			for (Edge edge : actual) {
-				if (nodos[edge.destino].llave > edge.longitud && !nodos[edge.destino].marcado) {
-					if (nodos[edge.destino].llave!=Double.POSITIVE_INFINITY) {
-						respuesta += nodos[edge.destino].llave;
+		LinkedList<Integer>[] adj = new LinkedList[N];
+		Node[] nodos=new Node[N];
+		for (int i = 0; i < nodos.length; i++) {
+			for(int e=0;e<nodos.length;e++)	{nodos[e]=new Node(e);adj[e]=new LinkedList();}
+			nodos[i].llave = -1;
+			LinkedList<Node> cola = cola(nodos);
+			Collections.sort(cola);
+			while(!cola.isEmpty()){
+				Node u = minimo(cola);
+				Collections.sort(cola);
+				for (Edge arco :lAdj[u.id]) {
+					Node nodo = pertenece(arco.destino, cola);
+					if(nodo != null && nodo.llave > arco.longitud){
+						nodo.padre = u.id;
+						nodo.llave = arco.longitud;
 					}
-					nodos[edge.destino].llave = edge.longitud;
-					nodos[edge.destino].padre = i;
-				}else respuesta += edge.longitud;	
+				}
 			}
-			max=Math.max(respuesta, max);
+			for (int j = 0; j < N; j++) {
+				if (nodos[j].llave != -1){
+					adj[nodos[j].padre].add(j);
+				}
+				else{
+					nodos[j].llave = 0;
+				}
+			}
+			boolean completo = true;
+			dfsVisit(0, adj, nodos);
+			for (int j = 0; j < nodos.length && completo; j++) {
+				if (!nodos[j].marcado)completo = false;
+			}
+			int aDejar = 0;
+			if (completo) {
+				for (int j = 0; j < nodos.length; j++) {
+					aDejar += nodos[j].llave;
+				}
+				for (int j = 0; j < arcos.size(); j++) {
+					respuesta += arcos.get(j).longitud;
+				}
+				return respuesta + cableInservible - aDejar;
+			}
 		}
-		return max+cableInservible;
+		return 0;
 	}
-	
+
+	public static Node pertenece(int id, LinkedList<Node> cola){
+		Node nodo = null;
+		for (int i = 0; i < cola.size() && nodo == null; i++) {
+			if (cola.get(i).id == id) {
+				nodo = cola.get(i);
+			}
+		}
+		return nodo;
+	}
+
+	public static LinkedList<Node> cola(Node[] vertices){
+		LinkedList<Node> lista = new LinkedList<Node>();
+		for (int i = 0; i < vertices.length; i++) {
+			lista.add(vertices[i]);
+		}
+		return lista;
+	}
+
+	public static Node minimo(LinkedList<Node> vertices){
+		Node min = new Node(-1);
+		int lugar = 0;
+		for (int i = 0; i < vertices.size(); i++) {
+			if(min.llave > vertices.get(i).llave){
+				lugar = i;
+				min = vertices.get(i);
+			}
+		}
+		return vertices.remove(lugar);
+	}
+
 	static int time = 0;
 	public static void dfsVisit(int u,List<Integer>[] lAdj,Node[] nodos){
-		nodos[u].color=Node.GRIS;
-		time++;
-		for(int v:lAdj[u])if(nodos[v].color==Node.BLANCO){
-			dfsVisit(v,lAdj,nodos);
-		}
-		time++;
-		nodos[u].tiempoFinalVisita=time;
-		nodos[u].color = Node.NEGRO;
+		nodos[u].marcado = true;
+		for(Integer v:lAdj[u])if(!nodos[v].marcado)dfsVisit(v, lAdj,nodos);
 	}
-	
+
 	static class Edge implements Comparable<Edge>{
 		int destino;
 		double longitud;
@@ -102,8 +152,12 @@ public class ProblemaC_1 {
 			double a = longitud-arg0.longitud;
 			return (int)a;
 		}
+
+		public String toString(){
+			return longitud+"";
+		}
 	}
-	
+
 	static class Node implements Comparable<Node>{
 		final static int BLANCO=0,GRIS = 1,NEGRO = 2;
 		boolean marcado = false;
