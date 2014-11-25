@@ -1,7 +1,10 @@
 package problemaB;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
 public class ProblemaB_0{
+	
 	public static void main()throws Exception{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for(String h;(h=br.readLine())!=null;){
@@ -18,7 +21,7 @@ public class ProblemaB_0{
 	static int solve(int[][] piramide){
 		int max=0;
 		int[] currentNumber=new int[piramide.length];//Número que representa cuantas esferas ha quitado de la piramide. currentNumber[e] representa la cantidad de esferas que ha quitado del nivel e
-													 //, contando los niveles de la esfera de más a la derecha hacia el lado superior izquierdo 
+		//, contando los niveles de la esfera de más a la derecha hacia el lado superior izquierdo 
 		cicloPrincipal:do{
 			for(int e=1;e<piramide.length;e++){//Ciclo para verificar que se cumple la restricción que indica que no se pueden quitar esferas si no se han previamente quitado las de arriba
 				if(currentNumber[e-1]<currentNumber[e])continue cicloPrincipal;//Continua con la siguiente iteración si esta no cumple la restricciones
