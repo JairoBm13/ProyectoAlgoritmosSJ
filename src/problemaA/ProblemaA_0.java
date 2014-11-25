@@ -47,7 +47,7 @@ public class ProblemaA_0 {
 			if(sumaDiagonal1!=suma||sumaDiagonal2!=suma)return false;//Verifica que la sumas de las diagonales sean válida
 			return true;//Encontro una solucion
 		}else{
-			for(int e=0;e<nums.size();e++){
+			for(int e=0;e<nums.size();e++){ 
 				int v=nums.remove(e);//quita el numero de nums
 				solucion.add(v);//Lo agrega a la solucion
 				
