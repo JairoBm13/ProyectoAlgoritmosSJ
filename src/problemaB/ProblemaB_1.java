@@ -44,6 +44,11 @@ public class ProblemaB_1{
 			for(int i=0;i<=e;i++)piramideDER[e][i] = 0;
 		}
 
+		int[] quitados = new int[nivel];
+		for(int i=0;i<nivel;i++){
+			quitados[i] = 0;
+		}
+
 		List<String> mayores = new ArrayList<String>();
 		int[] derecha = new int[nivel];
 		int[] izquierda = new int[nivel];
@@ -103,31 +108,67 @@ public class ProblemaB_1{
 
 		//Calcula todos los posibles puntajes maximos obtenidos de retirar pelotas
 
-		String[] valPosMay = mayores.get(0).split("-");
-		if(Integer.parseInt(valPosMay[0]) > 0){
+		String[] valPosMay = mayores.get(0).split(",");
+		System.out.println(valPosMay[1]);
+		int numerito = Integer.parseInt(valPosMay[0]);
+		if(numerito > 0){
 			for(int i =1; i<nivel;i++){
 
-				String[] valPos = mayores.get(i).split("-");
+				String[] valPos = mayores.get(i).split(",");
 				if(Integer.parseInt(valPos[0]) > 0){
-					
+
+					int posI = Integer.parseInt(valPos[1]);
+					int posJ = Integer.parseInt(valPos[2]);
+					int valorquitar =0;
+
+					int k = posI;
+					boolean choque = false;
+					while(!choque && k>0){
+
+						if((k-1) < 0){
+							choque=true;
+						}
+						else{
+							int sumDiag = piramide[k][posJ];
+							if(k+1 < nivel){
+								
+								int limPiramide = quitados[k+1];
+								if(limPiramide>=(k-1))choque=true;
+
+								int limDiagonal = quitados[k-1];
+								int valDiagonal = piramideIZ[k][posJ];
+								int valDiagonalResta = piramideIZ[limDiagonal][limDiagonal-k-posJ];
+
+								sumDiag += (valDiagonal - valDiagonalResta);
+
+								valorquitar+= sumDiag;
+								k--;
+							}
+						}
+					}
+
+					if(valorquitar>0){
+						max+=valorquitar;
+						quitados[posJ] = posI;
+					}
 				}
 			}
 		}
+
 		return max;
 	}
 
 	static void mayoresPorDiagonal(List<String> lista, int[][] piramideN, int nivel){
 		for(int i = 0; i<nivel;i++){
 			int max = piramideN[nivel-1][i];
-			String pos = nivel + "-" + i;
-			for(int j = i; j<nivel-1;j++){
-				if(piramideN[j][i]>max){max=piramideN[j][i]; pos =  j + "-" + i;}
+			String pos = nivel + "," + i;
+			for(int j = i; j<nivel;j++){
+				if(piramideN[j][i]>max){max=piramideN[j][i]; pos =  j + "," + i;}
 			}
 
-			lista.add(max + "-" + pos);
+			lista.add(max + "," + pos);
 		}
 
 		Collections.sort(lista);
-		System.out.println(lista.get(0));
 	}
 }
