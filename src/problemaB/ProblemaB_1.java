@@ -32,22 +32,18 @@ public class ProblemaB_1{
 			for(int i=0;i<=e;i++)piramideN[e][i] = 0;
 		}
 
-		int[][] piramideIZ=new int[nivel][];
-		for(int e=0;e<nivel;e++){
-			piramideIZ[e]=new int[e+1];
-			for(int i=0;i<=e;i++)piramideIZ[e][i] = 0;
-		}
-
-		int[][] piramideDER=new int[nivel][];
-		for(int e=0;e<nivel;e++){
-			piramideDER[e]=new int[e+1];
-			for(int i=0;i<=e;i++)piramideDER[e][i] = 0;
-		}
-
-		int[] quitados = new int[nivel];
-		for(int i=0;i<nivel;i++){
-			quitados[i] = 0;
-		}
+//		int[][] piramideIZ=new int[nivel][];
+//		for(int e=0;e<nivel;e++){
+//			piramideIZ[e]=new int[e+1];
+//			for(int i=0;i<=e;i++)piramideIZ[e][i] = 0;
+//		}
+//
+//
+//		int[][] piramideDER=new int[nivel][];
+//		for(int e=0;e<nivel;e++){
+//			piramideDER[e]=new int[e+1];
+//			for(int i=0;i<=e;i++)piramideDER[e][i] = 0;
+//		}
 
 		List<String> mayores = new ArrayList<String>();
 		int[] derecha = new int[nivel];
@@ -74,7 +70,7 @@ public class ProblemaB_1{
 					if(sum>max) max = sum;
 					izquierda[1] = der;
 					piramideN[i][0] = sum;
-					piramideDER[i][0] = der;
+//					piramideDER[i][0] = der;
 
 
 				}
@@ -85,7 +81,7 @@ public class ProblemaB_1{
 					sum = iz + piramide[i][j];
 					if(sum>max) max = sum;
 					piramideN[i][j] = sum;
-					piramideIZ[i][j] = iz;
+//					piramideIZ[i][j] = iz;
 
 
 				}
@@ -98,62 +94,15 @@ public class ProblemaB_1{
 					sum = der + iz + piramide[i][j];
 					if(sum>max) max = sum;
 					piramideN[i][j] = sum;
-					piramideDER[i][j] = der;
-					piramideIZ[i][j] = iz;
+//					piramideDER[i][j] = der;
+//					piramideIZ[i][j] = iz;
 				}
 			}		
 		}
 
-		mayoresPorDiagonal(mayores,piramideN,nivel);
-
 		//Calcula todos los posibles puntajes maximos obtenidos de retirar pelotas
 
 		String[] valPosMay = mayores.get(0).split(",");
-		System.out.println(valPosMay[1]);
-		int numerito = Integer.parseInt(valPosMay[0]);
-		if(numerito > 0){
-			for(int i =1; i<nivel;i++){
-
-				String[] valPos = mayores.get(i).split(",");
-				if(Integer.parseInt(valPos[0]) > 0){
-
-					int posI = Integer.parseInt(valPos[1]);
-					int posJ = Integer.parseInt(valPos[2]);
-					int valorquitar =0;
-
-					int k = posI;
-					boolean choque = false;
-					while(!choque && k>0){
-
-						if((k-1) < 0){
-							choque=true;
-						}
-						else{
-							int sumDiag = piramide[k][posJ];
-							if(k+1 < nivel){
-								
-								int limPiramide = quitados[k+1];
-								if(limPiramide>=(k-1))choque=true;
-
-								int limDiagonal = quitados[k-1];
-								int valDiagonal = piramideIZ[k][posJ];
-								int valDiagonalResta = piramideIZ[limDiagonal][limDiagonal-k-posJ];
-
-								sumDiag += (valDiagonal - valDiagonalResta);
-
-								valorquitar+= sumDiag;
-								k--;
-							}
-						}
-					}
-
-					if(valorquitar>0){
-						max+=valorquitar;
-						quitados[posJ] = posI;
-					}
-				}
-			}
-		}
 
 		return max;
 	}
@@ -168,7 +117,5 @@ public class ProblemaB_1{
 
 			lista.add(max + "," + pos);
 		}
-
-		Collections.sort(lista);
 	}
 }
