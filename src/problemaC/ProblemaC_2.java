@@ -2,33 +2,34 @@ package problemaC;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
-public class ProblemaC_1 {
+import problemaC.German.Node;
+
+public class ProblemaC_2{
 
 	public static void main()throws Exception{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
+		int caso = 0;
 		for(String h,j[];(h=br.readLine())!=null;){
 			int cableParaMismaToma = 0;
 			int total = 0;
 			j=h.split(" ");
+			caso++;
 			final int N=Integer.parseInt(j[0]),B=Integer.parseInt(j[1]);//Se lee el número de tomas eléctricas (N) y el número de cables (B)
 			//			System.err.println(N+" "+B);
 			//TODO inicializar la estructura seleccionada para almacenar los arcos
 			List<Edge> arcos = new LinkedList<Edge>();
-			LinkedList<Edge>[] lAdj = new LinkedList[N];
-			LinkedList<Edge>[] lAdjInv = new LinkedList[N];
-			Integer[][] conect = new Integer[N][N];
-//			for (int i = 0; i < conect.length; i++) {
-//				for (int k = 0; k < conect.length; k++) {
-//					conect[i][k] = -1;
-//				}
-//			}
-			for (int i = 0; i < N; i++) {
-				lAdj[i] = new LinkedList<Edge>();
-				lAdjInv[i] = new LinkedList<Edge>();
+			int[][] mAdj = new int[N][N];
+			for (int i = 0; i < mAdj.length; i++) {
+				for (int k = 0; k < mAdj.length; k++) {
+					mAdj[i][k] = (int) Double.POSITIVE_INFINITY;
+				}
 			}
 			for(int e=0;e<B;e++){
 				j=br.readLine().split(" ");
@@ -39,69 +40,73 @@ public class ProblemaC_1 {
 				if (u==v) {cableParaMismaToma+=l;}
 				else{
 					total+=l;
-					if (conect[u][v] != null) {
-						if (conect[u][v] > l) {
-							conect[u][v] = l;
-							lAdj[u].remove(new Edge(v, conect[u][v]));
-							Edge arco1 = new Edge(v, l);
-							lAdj[u].add(arco1);
-							arcos.add(arco1);
-							Edge arco2 = new Edge(u, l);
-							lAdj[v].add(arco2);
-						}
-						else{
-							Edge arco1 = new Edge(v, l);
-							lAdj[u].add(arco1);
-							arcos.add(arco1);
-							Edge arco2 = new Edge(u, l);
-							lAdj[v].add(arco2);
-						}
+					if (mAdj[u][v] > l ) {					
+						mAdj[u][v] = l;mAdj[v][u] = l;
 					}
-					else{
-						conect[u][v] = l;
-						Edge arco1 = new Edge(v, l);
-						lAdj[u].add(arco1);
-						arcos.add(arco1);
-						Edge arco2 = new Edge(u, l);
-						lAdj[v].add(arco2);
-					}
+					Edge arco1 = new Edge(v, l);
+					arcos.add(arco1);
+					Edge arco2 = new Edge(u, l);
 				}
+				
 			}
-			System.out.println(solve(N,total,cableParaMismaToma,arcos, lAdj/*TODO agregar los parametros necesario*/));
+//			if (caso == 4) {
+//				for (int i = 0; i < mAdj.length; i++) {
+//					for (int k = 0; k < mAdj.length; k++) {
+//						System.out.print(mAdj[i][k]+" ");
+//					}
+//					System.out.print("\n");
+//				}
+//			}
+			
+
+			System.out.println(solve(N, total ,cableParaMismaToma,arcos, mAdj/*TODO agregar los parametros necesario*/));
 		}
 	}
 
-	public static int solve(final int N,int total,int cableInservible, List<Edge> arcos, LinkedList<Edge>[] lAdj/*TODO agregar los parametros necesario*/){
+	public static int solve(final int N,int total, int cableInservible, List<Edge> arcos, int[][] mAdj/*TODO agregar los parametros necesario*/){
 		//TODO su solucion
 		int respuesta = 0;
-		LinkedList<Integer>[] adj = new LinkedList[N];
-		Node[] nodos=new Node[N];
-		for (int i = 0; i < nodos.length; i++) {
-			for(int e=0;e<nodos.length;e++)	{nodos[e]=new Node(e);adj[e]=new LinkedList();}
-			nodos[i].llave = -1;
-			LinkedList<Node> cola = cola(nodos);
-			Collections.sort(cola);
+		LinkedList<Integer>[] lAdj = new LinkedList[N];
+		Node[] nodos = new Node[N];
+		PriorityQueue<Node> cola = new PriorityQueue<Node>(N);
+		for (int i = 0; i < N; i++) {
+//			System.out.println("Caso "+i);
+			cola.clear();
+			for(int e=0;e<N;e++){
+				if (e != i) {					
+					nodos[e] = new Node(e);
+					cola.add(nodos[e]);
+					lAdj[e]=new LinkedList();
+				}else{
+					nodos[i] = new Node(i);
+					nodos[i].llave = -1;
+					cola.add(nodos[e]);
+					lAdj[e]=new LinkedList();
+				}
+				
+			}
 			while(!cola.isEmpty()){
-				Node u = minimo(cola);
-				Collections.sort(cola);
-				for (Edge arco :lAdj[u.id]) {
-					Node nodo = pertenece(arco.destino, cola);
-					if(nodo != null && nodo.llave > arco.longitud){
-						nodo.padre = u.id;
-						nodo.llave = arco.longitud;
+				Node u = cola.poll();
+//				System.out.println("Desde "+u.id);
+				for (int j = 0; j < N; j++) {
+					int costo = mAdj[u.id][j];
+					if(cola.contains(nodos[j]) && nodos[j].llave > costo ){
+						nodos[j].padre = u.id;
+						nodos[j].llave = costo;
+//						System.out.println(costo);
 					}
 				}
 			}
 			for (int j = 0; j < N; j++) {
 				if (nodos[j].llave != -1){
-					adj[nodos[j].padre].add(j);
+					lAdj[nodos[j].padre].add(j);
 				}
 				else{
 					nodos[j].llave = 0;
 				}
 			}
 			boolean completo = true;
-			dfsVisit(0, adj, nodos);
+			dfsVisit(0, lAdj, nodos);
 			for (int j = 0; j < nodos.length && completo; j++) {
 				if (!nodos[j].marcado)completo = false;
 			}
@@ -116,34 +121,12 @@ public class ProblemaC_1 {
 		return 0;
 	}
 
-	public static Node pertenece(int id, LinkedList<Node> cola){
-		Node nodo = null;
-		for (int i = 0; i < cola.size() && nodo == null; i++) {
-			if (cola.get(i).id == id) {
-				nodo = cola.get(i);
-			}
-		}
-		return nodo;
-	}
-
 	public static LinkedList<Node> cola(Node[] vertices){
 		LinkedList<Node> lista = new LinkedList<Node>();
 		for (int i = 0; i < vertices.length; i++) {
 			lista.add(vertices[i]);
 		}
 		return lista;
-	}
-
-	public static Node minimo(LinkedList<Node> vertices){
-		Node min = new Node(-1);
-		int lugar = 0;
-		for (int i = 0; i < vertices.size(); i++) {
-			if(min.llave > vertices.get(i).llave){
-				lugar = i;
-				min = vertices.get(i);
-			}
-		}
-		return vertices.remove(lugar);
 	}
 
 	static int time = 0;
