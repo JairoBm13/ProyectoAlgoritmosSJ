@@ -1,14 +1,22 @@
 package problemaC;
 
+/**
+ * Sección 1
+ *Grupo 30
+ * Santiago Beltran Caicedo    201313263
+ *Jairo Emilio Bautista Mora    201313234
+ */
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
+
 public class ProblemaC_1 {
 
+	@SuppressWarnings("unchecked")
 	public static void main()throws Exception{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for(String h,j[];(h=br.readLine())!=null;){
@@ -39,17 +47,18 @@ public class ProblemaC_1 {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static int solve(final int N,int total, LinkedList<Edge>[] lAdj/*TODO agregar los parametros necesario*/){
 		//TODO su solucion
 		LinkedList<Integer>[] adj = new LinkedList[N];
 		Node[] nodos=new Node[N];
-		for (int i = 0; i < nodos.length; i++) {
+//		for (int i = 0; i < nodos.length; i++) {
 			PriorityQueue<Node> cola = new PriorityQueue<Node>(N);
-			nodos[i] = new Node(i);
-			nodos[i].llave = -1;
-			cola.add(nodos[i]);
+			nodos[0] = new Node(0);
+			nodos[0].llave = -1;
+			cola.add(nodos[0]);
 			for(int e=0;e<nodos.length;e++){
-				if (i!=e) {
+				if (0!=e) {
 					nodos[e]=new Node(e);
 					cola.add(nodos[e]);					
 				}
@@ -67,58 +76,28 @@ public class ProblemaC_1 {
 					}
 				}
 			}
-			for (int j = 0; j < N; j++) {
-				if (nodos[j].llave != -1){
-					adj[nodos[j].padre].add(j);
-				}
-				else{
-					nodos[j].llave = 0;
-				}
-			}
-			boolean completo = true;
-			dfsVisit(0, adj, nodos);
-			for (int j = 0; j < nodos.length && completo; j++) {
-				if (!nodos[j].marcado)completo = false;
-			}
+//			for (int j = 0; j < N; j++) {
+//				if (nodos[j].llave != -1){
+//					adj[nodos[j].padre].add(j);
+//				}
+//				else{
+					nodos[0].llave = 0;
+//				}
+//			}
+//			boolean completo = true;
+//			dfsVisit(0, adj, nodos);
+//			for (int j = 0; j < nodos.length && completo; j++) {
+//				if (!nodos[j].marcado)completo = false;
+//			}
 			int aDejar = 0;
-			if (completo) {
+//			if (completo) {
 				for (int j = 0; j < nodos.length; j++) {
 					aDejar += nodos[j].llave;
 				}
 				return total - aDejar;
-			}
-		}
-		return 0;
-	}
-
-	public static Node pertenece(int id, LinkedList<Node> cola){
-		Node nodo = null;
-		for (int i = 0; i < cola.size() && nodo == null; i++) {
-			if (cola.get(i).id == id) {
-				nodo = cola.get(i);
-			}
-		}
-		return nodo;
-	}
-
-	public static LinkedList<Node> cola(Node[] vertices){
-		LinkedList<Node> lista = new LinkedList<Node>();
-		for (int i = 0; i < vertices.length; i++) {
-			lista.add(vertices[i]);
-		}
-		return lista;
-	}
-
-	public static Node minimo(LinkedList<Node> vertices){
-		Node min = new Node(-1);
-		int lugar = 0;
-		for (int i = 0; i < vertices.size(); i++) {
-			if(min.llave > vertices.get(i).llave){
-				lugar = i;
-				min = vertices.get(i);
-			}
-		}
-		return vertices.remove(lugar);
+//			}
+//		}
+//		return 0;
 	}
 
 	static int time = 0;
