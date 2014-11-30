@@ -3,8 +3,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-public class ProblemaB_1{
+
+public class ProblemaB_1 {
 	public static void main()throws Exception{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for(String h;(h=br.                  readLine())!=null;){
@@ -114,43 +116,46 @@ public class ProblemaB_1{
 
 		//Calcula todos los posibles puntajes maximos obtenidos de retirar pelotas
 		mayoresPorDiagonal(mayoresDiagonalDer, piramideN, nivel);
-		for(int i = (nivel-1); i>=0;i--){
+
+		for(int i = 0; i<nivel;i++){
 
 			String[] puntajeYPos = mayoresDiagonalDer.get(i).split(",");
 
 			int posI = Integer.parseInt(puntajeYPos[1]);
 			int posJ = Integer.parseInt(puntajeYPos[2]);
 
-			try{
-				int posDiag = (nivel-1) - (posI - posJ);
-				int nivelDiagIz = quitadoDiagonalIz[posDiag];
-				System.out.println(posDiag);
+			int posDiag = (nivel-1) - (posI - posJ);
+			int nivelDiagIz = quitadoDiagonalIz[posDiag];
 
-				if(nivelDiagIz <= posI){
-					int lim = nivelDiagIz;
-					if(nivelDiagIz==-1) lim = 0;
+			if(nivelDiagIz <= posI){
 
-					for(int e = posI, k = posJ; e>=lim; e--,k--){
+				int valorQuitar = 0;
+				int lim = nivelDiagIz;
+				if(nivelDiagIz==-1) lim = 0;
+				boolean choque = false;
 
-						int puntActual = piramide[e][k];
+				for(int e = posI, k = posJ; e>=lim && k>=0 && !choque; e--,k--){
+
+					int limDiagDerActual = quitadoDiagonalDer[k];
+					int valDiag = 0;
+
+					if(limDiagDerActual  != -1){
+						if(limDiagDerActual < e)
+							valDiag = piramideDER[limDiagDerActual][k];
+						else choque = true;
 
 					}
+					valorQuitar+= valDiag;
 				}
 
+				int valorSum = Integer.parseInt(puntajeYPos[0]) - valorQuitar;
+				System.out.println(valorSum);
+				if(valorSum>0){
+					max+= valorSum;
+					quitadoDiagonalDer[posJ] = posI;
+					quitadoDiagonalIz[posDiag] = posJ;
 				}
-			catch(Exception o){
 			}
-
-
-			//			for(int e = (posJ+1); e<nivel && !agarrado; e++){ //Verifica que la pelota no halla sido agarrada previamente
-			//				if(quitadoDiagonalIz[e] > e)agarrado = true;
-			//			}
-
-			for(int j = posJ; j>=0;j--){
-
-			}
-
-
 		}
 
 		return max;
@@ -165,10 +170,20 @@ public class ProblemaB_1{
 			for(int j = i; j<nivel;j++){
 				if(piramideN[j][i]>max){max=piramideN[j][i]; pos =  j + "," + i;}
 			}
-			System.out.println(pos);
 			lista.add(max + "," + pos);
+
 		}
-		Collections.sort(lista);
+		Collections.sort(lista, new Comparator<String>(){
+			public int compare(String o1, String o2) {
+
+				String[] a1 = o1.split(",");
+				String[] a2 = o2.split(",");
+
+				if(Integer.parseInt(a1[0]) < Integer.parseInt(a2[0])) return 1;
+				else if(Integer.parseInt(a1[0]) > Integer.parseInt(a2[0])) return -1;
+				else return 0;
+			}
+		});
 	}
 
 
