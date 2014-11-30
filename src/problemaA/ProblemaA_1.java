@@ -15,7 +15,17 @@ public class ProblemaA_1 {
 		}
 	}
 	public static boolean solve(int[] numeros){
-		//TODO su solucion, puede usar las estructuras de datos que crea convenientes
-		return false;
+		if(numeros.length == 4){
+			int base = numeros[0];
+			for (int i = 0; i < numeros.length; i++) {
+				if (base != numeros[i]) return false;
+			}
+			return true;
+		}
+		int suma = 0;
+		for (int i = 0; i < numeros.length; i++) {
+			suma += numeros[i];
+		}
+		return (suma % numeros.length) == 0;
 	}
 }

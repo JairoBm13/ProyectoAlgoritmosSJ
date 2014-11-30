@@ -6,7 +6,7 @@ public class ProblemaC_Medicion {
 	
 	
 	public static void main(String[] args)throws Exception{
-		CasoPrueba caso=CasoPrueba.Big;
+		CasoPrueba caso=CasoPrueba.Medium;
 		prepararMedicion("problemaC"+caso);
 		ProblemaC_1.main();
 		terminarMedicion("problemaC"+caso);
