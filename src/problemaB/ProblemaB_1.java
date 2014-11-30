@@ -48,6 +48,7 @@ public class ProblemaB_1 {
 		}
 
 		List<String> mayoresDiagonalDer = new ArrayList<String>();
+		List<String> mayoresDiagonalIz = new ArrayList<String>();
 
 		int[] quitadoDiagonalIz = new int[nivel]; //Altura en la cual fue removido
 		for(int i =0; i<nivel;i++){
@@ -111,75 +112,180 @@ public class ProblemaB_1 {
 		}
 
 		//Calcula todos los posibles puntajes maximos obtenidos de retirar pelotas
-		mayoresPorDiagonal(mayoresDiagonalDer, piramideN, nivel);
+		mayoresPorDiagonal(mayoresDiagonalDer, mayoresDiagonalIz, piramideN, nivel);
 
-		for(int i = 0; i<nivel;i++){
+		//Recorrido diagonales derecha
+		for(int i = 0; i<mayoresDiagonalDer.size();i++){
 
 			String[] puntajeYPos = mayoresDiagonalDer.get(i).split(",");
 
 			int posI = Integer.parseInt(puntajeYPos[1]);
 			int posJ = Integer.parseInt(puntajeYPos[2]);
 
+			//			System.out.print(puntajeYPos[0] + "," + posI + "-" + posJ + ";");
+
 			int posDiag = (nivel-1) - (posI - posJ);
 			int nivelDiagIz = quitadoDiagonalIz[posDiag];
-
-			if(nivelDiagIz <= posI){
+			//			System.out.print(nivelDiagIz + ",");
+			if(nivelDiagIz <= posJ){
 
 				int valorQuitar = 0;
 				int lim = nivelDiagIz;
 				if(nivelDiagIz==-1) lim = 0;
+
 				boolean choque = false;
 
-				for(int e = posI, k = posJ; e>=lim && k>=0 && !choque; e--,k--){
+				for(int e = posI, k = posJ; e>=0 && k>=lim && !choque; e--,k--){
 
 					int limDiagDerActual = quitadoDiagonalDer[k];
+					//					System.out.print( " ," + limDiagDerActual+",");
 					int valDiag = 0;
 
 					if(limDiagDerActual  != -1){
 						if(limDiagDerActual < e)
 							valDiag = piramideDER[limDiagDerActual+1][k];
-						else choque = true;
-
+						else if(limDiagDerActual >= e){choque = true; valDiag += piramideN[e][k];}
 					}
 					valorQuitar+= valDiag;
 				}
 
+
 				int valorSum = Integer.parseInt(puntajeYPos[0]) - valorQuitar;
-				System.out.println(valorSum);
-				if(valorSum>0){
+				//				System.out.println(", " + valorQuitar + "=" + valorSum );
+				if(valorSum>=0){
 					max+= valorSum;
-					quitadoDiagonalDer[posJ] = posI;
-					quitadoDiagonalIz[posDiag] = posJ;
+
+					for(int e = posI, k = posJ; e>=0 && k>=lim ; e--,k--){
+						int quitadoDerActual = quitadoDiagonalDer[k];
+						if(e > quitadoDerActual)quitadoDiagonalDer[k] = e;
+					}
+
+					for(int e = posDiag; e<nivel ; e++){
+						int quitadoIzActual = quitadoDiagonalIz[e];
+						if(posJ > quitadoIzActual)quitadoDiagonalIz[e] = posJ;
+					}
+
 				}
 			}
 		}
+
+		//Recorrido diagonales Izquierda
+		//		for(int i = 0; i<nivel;i++){
+		//
+		//			String[] puntajeYPos = mayoresDiagonalIz.get(i).split(",");
+		//
+		//			int posI = Integer.parseInt(puntajeYPos[1]);
+		//			int posJ = Integer.parseInt(puntajeYPos[2]);
+		//
+		//			//			System.out.print(puntajeYPos[0] + "," + posI + "-" + posJ + ",");
+		//
+		//			int posDiag = (nivel-1) - (posI - posJ);
+		//			int nivelDiag = quitadoDiagonalIz[posDiag];
+		//			//			System.out.print(nivelDiag + ",");
+		//
+		//			if(nivelDiag <= posJ){
+		//
+		//				int valorQuitar = 0;
+		//				int lim = nivelDiag;
+		//				if(nivelDiag==-1) lim = 0;
+		//				boolean choque = false;
+		//
+		//				for(int e = posI, k = posJ; e>=0 && k>=lim && !choque; e--,k--){
+		//
+		//					int limDiagDerActual = quitadoDiagonalDer[k];
+		//					//					System.out.print( " ," + limDiagDerActual+",");
+		//					int valDiag = 0;
+		//
+		//					if(limDiagDerActual  != -1){
+		//						if(limDiagDerActual < e)
+		//							valDiag = piramideDER[limDiagDerActual+1][k];
+		//
+		//						else if(limDiagDerActual >= e){
+		//							choque = true;
+		//							valDiag += piramideN[e][k];
+		//						}
+		//					}
+		//					//					System.out.print("      " + valDiag + "       ");
+		//					valorQuitar+= valDiag;
+		//				}
+		//
+		//
+		//				int valorSum = Integer.parseInt(puntajeYPos[0]) - valorQuitar;
+		//				//				System.out.println(", " + Integer.parseInt(puntajeYPos[0]) + " - " +  valorQuitar + "=" + valorSum );
+		//				if(valorSum>0){
+		//					max+= valorSum;
+		//
+		//					for(int e = posI, k = posJ; e>=0 && k>=lim ; e--,k--){
+		//						int quitadoDerActual = quitadoDiagonalDer[k];
+		//						if(e > quitadoDerActual)quitadoDiagonalDer[k] = e;
+		//					}
+		//
+		//					for(int e = posDiag; e<nivel ; e++){
+		//						int quitadoIzActual = quitadoDiagonalIz[e];
+		//						if(posJ > quitadoIzActual)quitadoDiagonalIz[e] = posJ;
+		//					}
+		//
+		//				}
+		//			}
+		//		}
 
 		return max;
 
 	}
 
 
-	static void mayoresPorDiagonal(List<String> lista, int[][] piramideN, int nivel){
-		for(int i = 0; i<nivel;i++){
-			int max = piramideN[nivel-1][i];
-			String pos = (nivel-1) + "," + i;
-			for(int j = i; j<nivel;j++){
-				if(piramideN[j][i]>max){max=piramideN[j][i]; pos =  j + "," + i;}
-			}
-			lista.add(max + "," + pos);
+	static void mayoresPorDiagonal(List<String> listaDer, List<String> listaIz, int[][] piramideN, int nivel){
+		Comparator<String> comp = new Comparator<String>(){
 
-		}
-		Collections.sort(lista, new Comparator<String>(){
 			public int compare(String o1, String o2) {
 
 				String[] a1 = o1.split(",");
 				String[] a2 = o2.split(",");
 
-				if(Integer.parseInt(a1[0]) < Integer.parseInt(a2[0])) return 1;
-				else if(Integer.parseInt(a1[0]) > Integer.parseInt(a2[0])) return -1;
+				
+				if(Integer.parseInt(a1[0]) > Integer.parseInt(a2[0])) return -1;
+				else if(Integer.parseInt(a1[0]) < Integer.parseInt(a2[0])) return 1;
+				else if(Integer.parseInt(a1[1]) > Integer.parseInt(a2[1])) return -1;
+				else if(Integer.parseInt(a1[1]) < Integer.parseInt(a2[1])) return 1;
+
+
 				else return 0;
 			}
-		});
+		};
+
+		for(int i = 0; i<nivel;i++){
+
+			int max = piramideN[nivel-1][i];
+			String pos = (nivel-1) + "," + i;
+
+			for(int j = i; j<nivel;j++){
+
+				if(piramideN[j][i]>max){
+					max=piramideN[j][i]; 
+					pos =  j + "," + i;
+				}
+			}
+			listaDer.add(max + "," + pos);
+
+		}
+
+		for(int i = (nivel-1); i>=0;i--){
+
+			int max = piramideN[i][0];
+			String pos = i + "," + 0;
+
+			for(int j = 0, e = i; j < (nivel-i);j++, e++){
+				if(piramideN[e][j]>=max){
+					max=piramideN[e][j]; 
+					pos = e + "," + j;
+				}
+			}
+			listaDer.add(max + "," + pos);
+
+		}
+
+		Collections.sort(listaDer, comp);
+//		Collections.sort(listaIz, comp);
 	}
 
 
