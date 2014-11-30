@@ -2,33 +2,23 @@ package problemaC;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class ProblemaC_1 {
 
 	public static void main()throws Exception{
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for(String h,j[];(h=br.readLine())!=null;){
-			int cableParaMismaToma = 0;
 			int total = 0;
 			j=h.split(" ");
 			final int N=Integer.parseInt(j[0]),B=Integer.parseInt(j[1]);//Se lee el número de tomas eléctricas (N) y el número de cables (B)
-			//			System.err.println(N+" "+B);
 			//TODO inicializar la estructura seleccionada para almacenar los arcos
-			List<Edge> arcos = new LinkedList<Edge>();
 			LinkedList<Edge>[] lAdj = new LinkedList[N];
-			LinkedList<Edge>[] lAdjInv = new LinkedList[N];
-			Integer[][] conect = new Integer[N][N];
-//			for (int i = 0; i < conect.length; i++) {
-//				for (int k = 0; k < conect.length; k++) {
-//					conect[i][k] = -1;
-//				}
-//			}
 			for (int i = 0; i < N; i++) {
 				lAdj[i] = new LinkedList<Edge>();
-				lAdjInv[i] = new LinkedList<Edge>();
 			}
 			for(int e=0;e<B;e++){
 				j=br.readLine().split(" ");
@@ -36,59 +26,44 @@ public class ProblemaC_1 {
 				int v=Integer.parseInt(j[1]);
 				int l=Integer.parseInt(j[2]);
 				//TODO agregar el arco a la estructura
-				if (u==v) {cableParaMismaToma+=l;}
+				if (u==v) {total+=l;}
 				else{
 					total+=l;
-					if (conect[u][v] != null) {
-						if (conect[u][v] > l) {
-							conect[u][v] = l;
-							lAdj[u].remove(new Edge(v, conect[u][v]));
-							Edge arco1 = new Edge(v, l);
-							lAdj[u].add(arco1);
-							arcos.add(arco1);
-							Edge arco2 = new Edge(u, l);
-							lAdj[v].add(arco2);
-						}
-						else{
-							Edge arco1 = new Edge(v, l);
-							lAdj[u].add(arco1);
-							arcos.add(arco1);
-							Edge arco2 = new Edge(u, l);
-							lAdj[v].add(arco2);
-						}
-					}
-					else{
-						conect[u][v] = l;
-						Edge arco1 = new Edge(v, l);
-						lAdj[u].add(arco1);
-						arcos.add(arco1);
-						Edge arco2 = new Edge(u, l);
-						lAdj[v].add(arco2);
-					}
+					Edge arco1 = new Edge(v, l);
+					lAdj[u].add(arco1);
+					Edge arco2 = new Edge(u, l);
+					lAdj[v].add(arco2);
 				}
 			}
-			System.out.println(solve(N,total,cableParaMismaToma,arcos, lAdj/*TODO agregar los parametros necesario*/));
+			System.out.println(solve(N, total, lAdj/*TODO agregar los parametros necesario*/));
 		}
 	}
 
-	public static int solve(final int N,int total,int cableInservible, List<Edge> arcos, LinkedList<Edge>[] lAdj/*TODO agregar los parametros necesario*/){
+	public static int solve(final int N,int total, LinkedList<Edge>[] lAdj/*TODO agregar los parametros necesario*/){
 		//TODO su solucion
-		int respuesta = 0;
 		LinkedList<Integer>[] adj = new LinkedList[N];
 		Node[] nodos=new Node[N];
 		for (int i = 0; i < nodos.length; i++) {
-			for(int e=0;e<nodos.length;e++)	{nodos[e]=new Node(e);adj[e]=new LinkedList();}
+			PriorityQueue<Node> cola = new PriorityQueue<Node>(N);
+			nodos[i] = new Node(i);
 			nodos[i].llave = -1;
-			LinkedList<Node> cola = cola(nodos);
-			Collections.sort(cola);
+			cola.add(nodos[i]);
+			for(int e=0;e<nodos.length;e++){
+				if (i!=e) {
+					nodos[e]=new Node(e);
+					cola.add(nodos[e]);					
+				}
+				adj[e] = new LinkedList<Integer>();
+			}
 			while(!cola.isEmpty()){
-				Node u = minimo(cola);
-				Collections.sort(cola);
+				Node u = cola.poll();
 				for (Edge arco :lAdj[u.id]) {
-					Node nodo = pertenece(arco.destino, cola);
-					if(nodo != null && nodo.llave > arco.longitud){
-						nodo.padre = u.id;
-						nodo.llave = arco.longitud;
+					if(cola.contains(nodos[arco.destino]) && nodos[arco.destino].llave > arco.longitud){
+						nodos[arco.destino].padre = u.id;
+						Node temp = nodos[arco.destino];
+						cola.remove(nodos[arco.destino]);
+						temp.llave = arco.longitud;
+						cola.add(temp);
 					}
 				}
 			}
@@ -110,7 +85,7 @@ public class ProblemaC_1 {
 				for (int j = 0; j < nodos.length; j++) {
 					aDejar += nodos[j].llave;
 				}
-				return total + cableInservible - aDejar;
+				return total - aDejar;
 			}
 		}
 		return 0;
@@ -187,9 +162,11 @@ public class ProblemaC_1 {
 		}
 		@Override
 		public int compareTo(Node o) {
-			int a=tiempoFinalVisita-o.tiempoFinalVisita;
-			if(a==0)return id-o.id;
-			return a;
+			return (int)(llave-o.llave);
+		}
+		
+		public String toString(){
+			return "id" + id + "," + llave;
 		}
 	}
 }

@@ -74,14 +74,12 @@ public class ProblemaB_1 {
 				if(i==0){
 					derecha[0] = piramide[0][0];
 					piramideN[0][0] = piramide[0][0];
-					if(piramide[0][0]>max) max = piramide[0][0];
 				}
 
 				else if(j==0){
 					derecha[0] = piramideN[i-1][0];
 					der = derecha[0];
 					sum = der + piramide[i][0];
-					if(sum>max) max = sum;
 					izquierda[1] = der;
 					piramideN[i][0] = sum;
 					piramideDER[i][0] = der;
@@ -93,7 +91,6 @@ public class ProblemaB_1 {
 					izquierda[j] = piramideN[i-1][j-1];
 					iz = izquierda[j];
 					sum = iz + piramide[i][j];
-					if(sum>max) max = sum;
 					piramideN[i][j] = sum;
 					piramideIZ[i][j] = iz;
 
@@ -106,7 +103,6 @@ public class ProblemaB_1 {
 					derecha[j] = derecha[j] + piramide[i-1][j];
 					der = derecha[j];
 					sum = der + iz + piramide[i][j];
-					if(sum>max) max = sum;
 					piramideN[i][j] = sum;
 					piramideDER[i][j] = der;
 					piramideIZ[i][j] = iz;
@@ -141,7 +137,7 @@ public class ProblemaB_1 {
 
 					if(limDiagDerActual  != -1){
 						if(limDiagDerActual < e)
-							valDiag = piramideDER[limDiagDerActual][k];
+							valDiag = piramideDER[limDiagDerActual+1][k];
 						else choque = true;
 
 					}
