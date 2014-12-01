@@ -1,5 +1,11 @@
 package problemaA;
 
+/**
+ * Sección 1
+ *Grupo 30
+ * Santiago Beltran Caicedo    201313263
+ *Jairo Emilio Bautista Mora    201313234
+ */
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
@@ -15,6 +21,9 @@ public class ProblemaA_1 {
 		}
 	}
 	public static boolean solve(int[] numeros){
+		if ((numeros.length%Math.sqrt(numeros.length))!=0) {
+			return false;
+		}
 		if(numeros.length == 4){
 			int base = numeros[0];
 			for (int i = 0; i < numeros.length; i++) {
