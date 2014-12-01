@@ -11,14 +11,11 @@ public class ProblemaB_1 {
 		BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
 		for(String h;(h=br.                  readLine())!=null;){
 			final int N=Integer.parseInt(h);//Lee el número de niveles
-			//TODO inicializar la estructura seleccionada para almacenar el los niveles de la piramide
 			int[][] piramide=new int[N][];
 			for(int e=0;e<N;e++){
-				//TODO inicializar la estructura seleccionada para almacenar el nivel e
 				piramide[e]=new int[e+1];
 				String[] j=br.readLine().split(" ");
 				for(int i=0;i<=e;i++)piramide[e][i]=Integer.parseInt(j[i]);
-				//TODO agregar el valor a la estructura
 
 			}
 			System.out.println(solve(N, piramide));
@@ -34,13 +31,6 @@ public class ProblemaB_1 {
 			for(int i=0;i<=e;i++)piramideN[e][i] = 0;
 		}
 
-		int[][] piramideIZ=new int[nivel][];
-		for(int e=0;e<nivel;e++){
-			piramideIZ[e]=new int[e+1];
-			for(int i=0;i<=e;i++)piramideIZ[e][i] = 0;
-		}
-
-
 		int[][] piramideDER=new int[nivel][];
 		for(int e=0;e<nivel;e++){
 			piramideDER[e]=new int[e+1];
@@ -48,6 +38,7 @@ public class ProblemaB_1 {
 		}
 
 		List<String> mayoresDiagonalDer = new ArrayList<String>();
+		
 		List<String> mayoresDiagonalIz = new ArrayList<String>();
 
 		int[] quitadoDiagonalIz = new int[nivel]; //Altura en la cual fue removido
@@ -93,8 +84,6 @@ public class ProblemaB_1 {
 					iz = izquierda[j];
 					sum = iz + piramide[i][j];
 					piramideN[i][j] = sum;
-					piramideIZ[i][j] = iz;
-
 
 				}
 
@@ -106,7 +95,7 @@ public class ProblemaB_1 {
 					sum = der + iz + piramide[i][j];
 					piramideN[i][j] = sum;
 					piramideDER[i][j] = der;
-					piramideIZ[i][j] = iz;
+
 				}
 			}		
 		}
@@ -122,11 +111,9 @@ public class ProblemaB_1 {
 			int posI = Integer.parseInt(puntajeYPos[1]);
 			int posJ = Integer.parseInt(puntajeYPos[2]);
 
-			//			System.out.print(puntajeYPos[0] + "," + posI + "-" + posJ + ";");
 
 			int posDiag = (nivel-1) - (posI - posJ);
 			int nivelDiagIz = quitadoDiagonalIz[posDiag];
-			//			System.out.print(nivelDiagIz + ",");
 			if(nivelDiagIz <= posJ){
 
 				int valorQuitar = 0;
@@ -138,7 +125,6 @@ public class ProblemaB_1 {
 				for(int e = posI, k = posJ; e>=0 && k>=lim && !choque; e--,k--){
 
 					int limDiagDerActual = quitadoDiagonalDer[k];
-					//					System.out.print( " ," + limDiagDerActual+",");
 					int valDiag = 0;
 
 					if(limDiagDerActual  != -1){
@@ -151,7 +137,6 @@ public class ProblemaB_1 {
 
 
 				int valorSum = Integer.parseInt(puntajeYPos[0]) - valorQuitar;
-				//				System.out.println(", " + valorQuitar + "=" + valorSum );
 				if(valorSum>=0){
 					max+= valorSum;
 
@@ -169,66 +154,109 @@ public class ProblemaB_1 {
 			}
 		}
 
-		//Recorrido diagonales Izquierda
-		//		for(int i = 0; i<nivel;i++){
-		//
-		//			String[] puntajeYPos = mayoresDiagonalIz.get(i).split(",");
-		//
-		//			int posI = Integer.parseInt(puntajeYPos[1]);
-		//			int posJ = Integer.parseInt(puntajeYPos[2]);
-		//
-		//			//			System.out.print(puntajeYPos[0] + "," + posI + "-" + posJ + ",");
-		//
-		//			int posDiag = (nivel-1) - (posI - posJ);
-		//			int nivelDiag = quitadoDiagonalIz[posDiag];
-		//			//			System.out.print(nivelDiag + ",");
-		//
-		//			if(nivelDiag <= posJ){
-		//
-		//				int valorQuitar = 0;
-		//				int lim = nivelDiag;
-		//				if(nivelDiag==-1) lim = 0;
-		//				boolean choque = false;
-		//
-		//				for(int e = posI, k = posJ; e>=0 && k>=lim && !choque; e--,k--){
-		//
-		//					int limDiagDerActual = quitadoDiagonalDer[k];
-		//					//					System.out.print( " ," + limDiagDerActual+",");
-		//					int valDiag = 0;
-		//
-		//					if(limDiagDerActual  != -1){
-		//						if(limDiagDerActual < e)
-		//							valDiag = piramideDER[limDiagDerActual+1][k];
-		//
-		//						else if(limDiagDerActual >= e){
-		//							choque = true;
-		//							valDiag += piramideN[e][k];
-		//						}
-		//					}
-		//					//					System.out.print("      " + valDiag + "       ");
-		//					valorQuitar+= valDiag;
-		//				}
-		//
-		//
-		//				int valorSum = Integer.parseInt(puntajeYPos[0]) - valorQuitar;
-		//				//				System.out.println(", " + Integer.parseInt(puntajeYPos[0]) + " - " +  valorQuitar + "=" + valorSum );
-		//				if(valorSum>0){
-		//					max+= valorSum;
-		//
-		//					for(int e = posI, k = posJ; e>=0 && k>=lim ; e--,k--){
-		//						int quitadoDerActual = quitadoDiagonalDer[k];
-		//						if(e > quitadoDerActual)quitadoDiagonalDer[k] = e;
-		//					}
-		//
-		//					for(int e = posDiag; e<nivel ; e++){
-		//						int quitadoIzActual = quitadoDiagonalIz[e];
-		//						if(posJ > quitadoIzActual)quitadoDiagonalIz[e] = posJ;
-		//					}
-		//
-		//				}
-		//			}
-		//		}
+		//Recorrido diagonales Izquierda y Derecha
+		for(int i = 0; i<nivel;i++){
 
+			String[] puntajeYPos = mayoresDiagonalIz.get(i).split(",");
+
+			int posI = Integer.parseInt(puntajeYPos[1]);
+			int posJ = Integer.parseInt(puntajeYPos[2]);
+
+			int posDiag = (nivel-1) - (posI - posJ);
+			int nivelDiag = quitadoDiagonalIz[posDiag];
+
+			if(nivelDiag <= posJ){
+
+				int valorQuitar = 0;
+				int lim = nivelDiag;
+				if(nivelDiag==-1) lim = 0;
+				boolean choque = false;
+
+				for(int e = posI, k = posJ; e>=0 && k>=lim && !choque; e--,k--){
+
+					int limDiagDerActual = quitadoDiagonalDer[k];
+					int valDiag = 0;
+
+					if(limDiagDerActual  != -1){
+						if(limDiagDerActual < e)
+							valDiag = piramideDER[limDiagDerActual+1][k];
+
+						else if(limDiagDerActual >= e){
+							choque = true;
+							valDiag += piramideN[e][k];
+						}
+					}
+					valorQuitar+= valDiag;
+				}
+
+
+				int valorSum = Integer.parseInt(puntajeYPos[0]) - valorQuitar;
+				if(valorSum>0){
+					max+= valorSum;
+
+					for(int e = posI, k = posJ; e>=0 && k>=lim ; e--,k--){
+						int quitadoDerActual = quitadoDiagonalDer[k];
+						if(e > quitadoDerActual)quitadoDiagonalDer[k] = e;
+					}
+
+					for(int e = posDiag; e<nivel ; e++){
+						int quitadoIzActual = quitadoDiagonalIz[e];
+						if(posJ > quitadoIzActual)quitadoDiagonalIz[e] = posJ;
+					}
+
+				}
+			}
+			
+			puntajeYPos = mayoresDiagonalIz.get(i).split(",");
+
+			posI = Integer.parseInt(puntajeYPos[1]);
+			posJ = Integer.parseInt(puntajeYPos[2]);
+
+			posDiag = (nivel-1) - (posI - posJ);
+			nivelDiag = quitadoDiagonalIz[posDiag];
+
+			if(nivelDiag <= posJ){
+
+				int valorQuitar = 0;
+				int lim = nivelDiag;
+				if(nivelDiag==-1) lim = 0;
+				boolean choque = false;
+
+				for(int e = posI, k = posJ; e>=0 && k>=lim && !choque; e--,k--){
+
+					int limDiagDerActual = quitadoDiagonalDer[k];
+					int valDiag = 0;
+
+					if(limDiagDerActual  != -1){
+						if(limDiagDerActual < e)
+							valDiag = piramideDER[limDiagDerActual+1][k];
+
+						else if(limDiagDerActual >= e){
+							choque = true;
+							valDiag += piramideN[e][k];
+						}
+					}
+					valorQuitar+= valDiag;
+				}
+
+
+				int valorSum = Integer.parseInt(puntajeYPos[0]) - valorQuitar;
+				if(valorSum>0){
+					max+= valorSum;
+
+					for(int e = posI, k = posJ; e>=0 && k>=lim ; e--,k--){
+						int quitadoDerActual = quitadoDiagonalDer[k];
+						if(e > quitadoDerActual)quitadoDiagonalDer[k] = e;
+					}
+
+					for(int e = posDiag; e<nivel ; e++){
+						int quitadoIzActual = quitadoDiagonalIz[e];
+						if(posJ > quitadoIzActual)quitadoDiagonalIz[e] = posJ;
+					}
+
+				}
+			}
+		}
 		return max;
 
 	}
@@ -242,7 +270,7 @@ public class ProblemaB_1 {
 				String[] a1 = o1.split(",");
 				String[] a2 = o2.split(",");
 
-				
+
 				if(Integer.parseInt(a1[0]) > Integer.parseInt(a2[0])) return -1;
 				else if(Integer.parseInt(a1[0]) < Integer.parseInt(a2[0])) return 1;
 				else if(Integer.parseInt(a1[1]) > Integer.parseInt(a2[1])) return -1;
@@ -266,7 +294,6 @@ public class ProblemaB_1 {
 				}
 			}
 			listaDer.add(max + "," + pos);
-
 		}
 
 		for(int i = (nivel-1); i>=0;i--){
@@ -280,45 +307,14 @@ public class ProblemaB_1 {
 					pos = e + "," + j;
 				}
 			}
-			listaDer.add(max + "," + pos);
-
+			listaIz.add(max + "," + pos);
 		}
 
 		Collections.sort(listaDer, comp);
-//		Collections.sort(listaIz, comp);
+		Collections.sort(listaIz, comp);
 	}
 
 
-	//	static int solve(int nivel, int[][] piramide){
-	//
-	//		String[] maximosNivel = new String[nivel];
-	//		int max = 0;
-	//		for (int i= (nivel-1); i>=0;i--){
-	//
-	//			int puntajeAcumulado = 0;
-	//			int maxPuntajeNivel = 0;
-	//			int maxPosNivel = 0;
-	//			
-	//			for(int j = 0; j<nivel;j++){
-	//
-	//
-	//				puntajeAcumulado += piramide[j][i];
-	//				if(puntajeAcumulado > maxPuntajeNivel){
-	//					maxPuntajeNivel = puntajeAcumulado;
-	//					maxPosNivel = j;
-	//				}
-	//			}
-	//
-	//			if(maxPuntajeNivel<0){
-	//				maximosNivel[i] = maxPuntajeNivel + "," + (-1);
-	//			}
-	//			else
-	//				maximosNivel[i] = maxPuntajeNivel + "," + maxPosNivel;
-	//		}
-	//
-	//
-	//
-	//		return max;
-	//	}
+
 
 }
